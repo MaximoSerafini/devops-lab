@@ -1,0 +1,11 @@
+version: '3.8'  # Versión del formato
+
+services:
+  web:  # Nombre interno del servicio
+    image: nginx:latest
+    container_name: servidor-banco-devops
+    ports:
+      - "8080:80"  # Puerto PC : Puerto Contenedor
+    volumes:
+      - .:/usr/share/nginx/html  # El punto significa "esta carpeta"
+    restart: always  # Si se cae, que se levante solo

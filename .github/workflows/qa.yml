@@ -1,0 +1,30 @@
+name: Pipeline DevOps - Control de Calidad
+
+# Trigger: ¿Cuándo se ejecuta esto?
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Jobs: Las tareas a realizar
+jobs:
+  revision-automatica:
+    runs-on: ubuntu-latest  # GitHub nos presta un servidor Ubuntu fresco
+
+    steps:
+    # Paso 1: El robot baja tu código del repositorio
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    # Paso 2: Verificar que no te olvidaste los archivos clave
+    - name: Verificar archivos críticos
+      run: |
+        echo "🔍 Iniciando auditoría de archivos..."
+        if [ -f "index.html" ]; then echo "✅ index.html encontrado"; else echo "❌ Faltan index.html"; exit 1; fi
+        if [ -f "docker-compose.yml" ]; then echo "✅ docker-compose.yml encontrado"; else echo "❌ Faltan docker-compose.yml"; exit 1; fi
+
+    # Paso 3: Validar que el docker-compose esté bien escrito
+    - name: Validar sintaxis de Docker
+      run: docker compose config
+      # Si el archivo está mal escrito, este comando falla y el pipeline se pone rojo.
